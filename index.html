@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Atelier Smash - Calculadora Gourmet de Hamburguesas</title>
+  
+  <!-- Google Fonts: Fraunces for gourmet serif headers, Plus Jakarta Sans for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#0E1015',
+              surface: '#171922',
+              card: '#1D202C',
+              border: 'rgba(255, 255, 255, 0.08)',
+              amber: '#F59E0B',
+              amberDark: '#D97706',
+              amberGlow: 'rgba(245, 158, 11, 0.15)',
+              gold: '#FBBF24',
+              text: '#E2E8F0',
+              muted: '#94A3B8'
+            }
+          },
+          fontFamily: {
+            serif: ['Fraunces', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Clean Gourmet Warm Dark Aesthetics */
+    body {
+      background-color: #0E1015;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.05) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(217, 119, 6, 0.03) 0%, transparent 50%);
+      color: #E2E8F0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px; /* Space for mobile floating bar */
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding-bottom: 20px;
+      }
+    }
+
+    .gourmet-card {
+      background: #171922;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .gourmet-card-highlight {
+      background: linear-gradient(145deg, #1D202C 0%, #171922 100%);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.08);
+    }
+
+    /* Minimum 44px touch targets for mobile usability */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    .btn-touch {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-touch:active {
+      transform: scale(0.97);
+    }
+
+    .gold-glow-text {
+      text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0E1015;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A2E3D;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #F59E0B;
+    }
+  </style>
+</head>
+<body class="selection:bg-amber-500/30 selection:text-amber-200">
+
+  <!-- Header Navbar -->
+  <header class="sticky top-0 z-40 bg-[#0E1015]/90 backdrop-blur-md border-b border-white/10 px-4 py-3.5">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      
+      <!-- Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 p-0.5 shadow-lg shadow-amber-500/20 flex items-center justify-center">
+          <div class="w-full h-full bg-[#0E1015] rounded-[10px] flex items-center justify-center text-amber-400 font-serif font-bold text-xl">
+            A
+          </div>
+        </div>
+        <div>
+          <h1 class="font-serif font-bold text-lg md:text-xl text-white tracking-wide flex items-center gap-2">
+            ATELIER <span class="text-amber-400 font-sans text-xs tracking-widest font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">Smash</span>
+          </h1>
+          <p class="text-[11px] text-brand-muted tracking-wider uppercase font-medium">Calculadora Gourmet de Costos</p>
+        </div>
+      </div>
+
+      <!-- Actions & Total Badge -->
+      <div class="flex items-center gap-2.5">
+        <div class="bg-[#171922] px-3.5 py-1.5 rounded-xl border border-white/10 text-xs font-semibold flex items-center gap-2">
+          <span class="text-brand-muted hidden sm:inline">Total:</span>
+          <span id="header-grand-total" class="text-amber-400 font-bold text-sm">$0</span>
+        </div>
+
+        <button id="btn-open-prices" class="btn-touch touch-target flex items-center gap-2 bg-[#1D202C] hover:bg-amber-500/10 text-slate-200 hover:text-amber-400 text-xs font-semibold px-3.5 py-2 rounded-xl border border-white/10 hover:border-amber-500/30 transition-colors">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <span class="hidden sm:inline">Precios</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Tab Controls (visible only on mobile) -->
+  <div class="lg:hidden max-w-6xl mx-auto px-4 mt-4">
+    <div class="bg-[#171922] p-1 rounded-2xl border border-white/10 flex text-xs font-semibold">
+      <button id="tab-btn-config" onclick="switchTab('config')" class="flex-1 py-2.5 rounded-xl text-center transition-all bg-amber-500 text-slate-950 font-bold shadow">
+        🍔 1. Configurar Burger
+      </button>
+      <button id="tab-btn-cart" onclick="switchTab('cart')" class="flex-1 py-2.5 rounded-xl text-center transition-all text-brand-muted hover:text-white flex items-center justify-center gap-1.5">
+        🛒 2. Pedido & Compras
+        <span id="tab-cart-badge" class="bg-amber-500/20 text-amber-400 font-bold px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+      </button>
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-4 mt-4 lg:mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- LEFT COLUMN: Burger Configurator & Active Items List (7 cols) -->
+    <section id="section-config" class="lg:col-span-7 space-y-6">
+
+      <!-- CONFIGURATOR CARD -->
+      <div class="gourmet-card rounded-2xl p-4 sm:p-6 relative overflow-hidden">
+        
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Configurar Hamburguesa</h2>
+            <p class="text-xs text-brand-muted">Diseña la combinación y ajusta las cantidades</p>
+          </div>
+          <div id="draft-unit-cost" class="bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs px-3 py-1.5 rounded-xl">
+            $0 c/u
+          </div>
+        </div>
+
+        <!-- Presets Selection -->
+        <div class="mb-5">
+          <label class="text-[11px] font-bold text-brand-muted uppercase tracking-wider block mb-2">Recetas & Presets Gourmet:</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button onclick="applyPreset('classic')" class="btn-touch touch-target text-left bg-[#1D202C] hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/30 p-2.5 rounded-xl transition-all">
+              <span class="block text-xs font-bold text-slate-200">Smash Clásica</span>
+              <span class="text-[10px] text-brand-muted block mt-0.5">1x Carne, 1x Cheddar</span>
+            </button>
+            <button onclick="applyPreset('double')" class="btn-touch touch-target text-left bg-[#1D202C] hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/30 p-2.5 rounded-xl transition-all">
+              <span class="block text-xs font-bold text-amber-400">Doble Cheese</span>
+              <span class="text-[10px] text-brand-muted block mt-0.5">2x Carne, 2x Cheddar</span>
+            </button>
+            <button onclick="applyPreset('bacon_master')" class="btn-touch touch-target text-left bg-[#1D202C] hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/30 p-2.5 rounded-xl transition-all">
+              <span class="block text-xs font-bold text-slate-200">Bacon Master</span>
+              <span class="text-[10px] text-brand-muted block mt-0.5">2x Carne, Bacon, Cebolla</span>
+            </button>
+            <button onclick="applyPreset('supreme')" class="btn-touch touch-target text-left bg-[#1D202C] hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/30 p-2.5 rounded-xl transition-all">
+              <span class="block text-xs font-bold text-amber-300">La Suprema</span>
+              <span class="text-[10px] text-brand-muted block mt-0.5">3x Carne, Muzza, Huevo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ingredients Controls Grid -->
+        <div class="space-y-3 mb-6">
+
+          <!-- Patties (Carne) -->
+          <div class="bg-[#1D202C]/70 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">🥩</div>
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">Medallones de Carne</span>
+                <span class="text-[11px] text-brand-muted">Vacuna seleccionada (90g c/u)</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0E1015] p-1 rounded-xl border border-white/10">
+              <button onclick="updateDraft('patties', -1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">-</button>
+              <span id="ctrl-patties" class="w-6 text-center font-bold text-sm text-white">2</span>
+              <button onclick="updateDraft('patties', 1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">+</button>
+            </div>
+          </div>
+
+          <!-- Cheddar Cheese -->
+          <div class="bg-[#1D202C]/70 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">🧀</div>
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">Queso Cheddar</span>
+                <span class="text-[11px] text-brand-muted">Fetas de cheddar estacionado</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0E1015] p-1 rounded-xl border border-white/10">
+              <button onclick="updateDraft('cheddar', -1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">-</button>
+              <span id="ctrl-cheddar" class="w-6 text-center font-bold text-sm text-white">2</span>
+              <button onclick="updateDraft('cheddar', 1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">+</button>
+            </div>
+          </div>
+
+          <!-- Bacon Crispy -->
+          <div class="bg-[#1D202C]/70 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">🥓</div>
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">Panceta Crocante</span>
+                <span class="text-[11px] text-brand-muted">Tiras ahumadas gruesas</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0E1015] p-1 rounded-xl border border-white/10">
+              <button onclick="updateDraft('bacon', -1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">-</button>
+              <span id="ctrl-bacon" class="w-6 text-center font-bold text-sm text-white">1</span>
+              <button onclick="updateDraft('bacon', 1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">+</button>
+            </div>
+          </div>
+
+          <!-- Mozzarella -->
+          <div class="bg-[#1D202C]/70 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">🍕</div>
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">Queso Mozzarella</span>
+                <span class="text-[11px] text-brand-muted">Fetas hiladas suave</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0E1015] p-1 rounded-xl border border-white/10">
+              <button onclick="updateDraft('muzza', -1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">-</button>
+              <span id="ctrl-muzza" class="w-6 text-center font-bold text-sm text-white">0</span>
+              <button onclick="updateDraft('muzza', 1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">+</button>
+            </div>
+          </div>
+
+          <!-- Fried Egg -->
+          <div class="bg-[#1D202C]/70 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">🍳</div>
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">Huevo Frito</span>
+                <span class="text-[11px] text-brand-muted">A la yema tierna</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0E1015] p-1 rounded-xl border border-white/10">
+              <button onclick="updateDraft('egg', -1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">-</button>
+              <span id="ctrl-egg" class="w-6 text-center font-bold text-sm text-white">0</span>
+              <button onclick="updateDraft('egg', 1)" class="btn-touch touch-target w-8 h-8 rounded-lg bg-[#171922] hover:bg-white/10 text-amber-400 font-bold flex items-center justify-center text-base">+</button>
+            </div>
+          </div>
+
+          <!-- Onion Style Dropdown -->
+          <div class="bg-[#1D202C]/70 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg shrink-0">🧅</div>
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">Variedad de Cebolla</span>
+                <span class="text-[11px] text-brand-muted">Corte y cocción</span>
+              </div>
+            </div>
+            <select id="ctrl-onion" onchange="updateDraftOnion(this.value)" class="bg-[#0E1015] border border-white/10 text-xs font-semibold text-amber-400 rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500/50">
+              <option value="smash">Cebolla Smash</option>
+              <option value="caramelized">Caramelizada</option>
+              <option value="fresh">Cebolla Fresca</option>
+              <option value="none">Sin Cebolla</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Batch Quantity & Submit CTA -->
+        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center gap-3">
+          
+          <div class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-3 bg-[#0E1015] p-2 rounded-xl border border-white/10">
+            <span class="text-xs font-bold text-brand-muted px-2">Cantidad:</span>
+            <div class="flex items-center gap-2">
+              <button onclick="updateDraft('qty', -1)" class="btn-touch touch-target w-9 h-9 rounded-lg bg-[#171922] text-amber-400 font-bold flex items-center justify-center text-lg">-</button>
+              <span id="ctrl-qty" class="w-8 text-center font-bold text-base text-white">1</span>
+              <button onclick="updateDraft('qty', 1)" class="btn-touch touch-target w-9 h-9 rounded-lg bg-[#171922] text-amber-400 font-bold flex items-center justify-center text-lg">+</button>
+            </div>
+          </div>
+
+          <button onclick="addCurrentDraftToOrder()" class="btn-touch touch-target w-full flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm py-3 px-5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+            <span>➕ Agregar al Pedido</span>
+            <span id="draft-batch-total" class="text-xs font-extrabold bg-slate-950/20 px-2 py-0.5 rounded-md">($0)</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- ADDED ITEMS LIST -->
+      <div class="gourmet-card rounded-2xl p-4 sm:p-6">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div>
+            <h3 class="font-serif font-bold text-lg text-white">Hamburguesas en Tu Pedido</h3>
+            <p class="text-xs text-brand-muted">Detalle de las combinaciones preparadas</p>
+          </div>
+          <span id="order-count-badge" class="bg-amber-500/10 text-amber-400 font-bold text-xs px-2.5 py-1 rounded-xl border border-amber-500/20">
+            0 Variedades
+          </span>
+        </div>
+
+        <div id="order-items-container" class="space-y-3">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div id="empty-order-state" class="text-center py-10 border border-dashed border-white/10 rounded-xl">
+          <p class="text-xs font-semibold text-brand-muted">Aún no has añadido hamburguesas.</p>
+          <p class="text-[11px] text-slate-500 mt-1">Configura arriba y presiona "Agregar al Pedido".</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: Supermarket Grocery List & Financial Summary (5 cols) -->
+    <section id="section-cart" class="lg:col-span-5 space-y-6 hidden lg:block">
+
+      <!-- GROCERY SHOPPING LIST CARD -->
+      <div class="gourmet-card-highlight rounded-2xl p-4 sm:p-6 relative">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+          <div>
+            <h3 class="font-serif font-bold text-lg text-white flex items-center gap-2">
+              <span>🛒</span> Lista de Compras
+            </h3>
+            <p class="text-xs text-brand-muted">Insumos exactos para el supermercado</p>
+          </div>
+          <span id="summary-total-burgers" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
+            0 Burgers Total
+          </span>
+        </div>
+
+        <ul id="shopping-list" class="space-y-2.5 text-xs text-slate-200">
+          <!-- Populated by JavaScript -->
+        </ul>
+      </div>
+
+      <!-- FINANCIAL SUMMARY & WHATSAPP EXPORTER -->
+      <div class="gourmet-card rounded-2xl p-4 sm:p-6 space-y-4">
+        
+        <h3 class="font-serif font-bold text-lg text-white flex items-center gap-2">
+          <span>💵</span> Resumen Financiero
+        </h3>
+
+        <div class="bg-[#0E1015] p-4 rounded-xl border border-white/10 space-y-2.5 text-xs">
+          <div class="flex justify-between text-brand-muted">
+            <span>Costo Promedio / Burger:</span>
+            <span id="summary-avg-cost" class="font-bold text-slate-200">$0</span>
+          </div>
+          <div class="flex justify-between text-base text-white font-bold pt-2 border-t border-white/10">
+            <span>COSTO TOTAL ESTIMADO:</span>
+            <span id="summary-grand-total" class="text-amber-400 gold-glow-text font-serif text-xl">$0</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-2.5 pt-1">
+          <button id="btn-whatsapp" onclick="copyWhatsAppList()" class="btn-touch touch-target w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>Copiar Lista para WhatsApp</span>
+          </button>
+
+          <button onclick="resetOrder()" class="btn-touch touch-target w-full bg-[#0E1015] hover:bg-red-500/10 text-brand-muted hover:text-red-400 font-semibold py-2.5 rounded-xl text-xs border border-white/10 transition-colors">
+            🔄 Reiniciar Pedido
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Floating Mobile Bar (visible on mobile) -->
+  <div class="lg:hidden fixed bottom-0 inset-x-0 bg-[#171922]/95 backdrop-blur-md border-t border-white/10 p-3 z-30 shadow-2xl">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <div>
+        <span class="text-[10px] text-brand-muted uppercase block font-medium">Total Estimado</span>
+        <span id="mobile-float-total" class="font-serif font-bold text-lg text-amber-400">$0</span>
+      </div>
+      <button onclick="switchTab('cart')" class="btn-touch bg-amber-500 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-lg shadow-amber-500/20">
+        <span>🛒 Ver Pedido</span>
+        <span id="mobile-float-badge" class="bg-slate-950/20 text-slate-950 px-1.5 py-0.5 rounded-md font-extrabold text-[10px]">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: Prices & Cost Settings -->
+  <div id="prices-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="gourmet-card w-full max-w-lg rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-4 bg-[#0E1015] border-b border-white/10 flex items-center justify-between">
+        <div>
+          <h3 class="font-serif font-bold text-base text-white">Configuración de Precios</h3>
+          <p class="text-[11px] text-brand-muted">Ajusta los valores de mercado por insumo</p>
+        </div>
+        <button id="btn-close-prices" class="text-brand-muted hover:text-white text-xl font-bold p-1">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 overflow-y-auto space-y-4 text-xs">
+        
+        <!-- Currency Selector -->
+        <div class="flex items-center justify-between bg-[#0E1015] p-3 rounded-xl border border-white/10">
+          <label for="input-currency" class="font-bold text-slate-200">Moneda del Sistema:</label>
+          <select id="input-currency" class="bg-[#171922] border border-white/10 text-amber-400 font-bold rounded-lg px-3 py-1.5 focus:outline-none">
+            <option value="$">$ (Pesos / General)</option>
+            <option value="UYU">UYU ($ Uruguay)</option>
+            <option value="ARS">ARS ($ Argentina)</option>
+            <option value="USD">USD ($ Dólar)</option>
+            <option value="EUR">EUR (€ Euro)</option>
+          </select>
+        </div>
+
+        <!-- Prices Input Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🥩 Carne Vacuna (/kg)</label>
+            <input type="number" id="price-beef-kg" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🍞 Pan Brioche (/unidad)</label>
+            <input type="number" id="price-bun" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🧀 Cheddar (/feta)</label>
+            <input type="number" id="price-cheddar" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🥓 Panceta (/tira)</label>
+            <input type="number" id="price-bacon" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🧀 Mozzarella (/feta)</label>
+            <input type="number" id="price-muzza" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🍳 Huevos (/unidad)</label>
+            <input type="number" id="price-egg" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">🧅 Cebolla (/kg)</label>
+            <input type="number" id="price-onion-kg" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+          <div class="bg-[#0E1015] p-3 rounded-xl border border-white/5 space-y-1">
+            <label class="block text-slate-300 font-bold">📦 Empaque/Extras (/burger)</label>
+            <input type="number" id="price-extras" class="w-full bg-[#171922] border border-white/10 rounded-lg px-3 py-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-500/50">
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-[#0E1015] border-t border-white/10 flex items-center justify-between">
+        <button id="btn-reset-default-prices" class="text-[11px] text-brand-muted hover:text-amber-400 underline">
+          Restablecer Valores
+        </button>
+        <button id="btn-save-prices" class="btn-touch bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20">
+          Guardar Cambios
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-20 lg:bottom-6 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    /* ATELIER SMASH - GOURMET CALCULATOR ENGINE */
+
+    const DEFAULT_PRICES = {
+      beefKg: 9500,
+      bun: 450,
+      cheddar: 280,
+      bacon: 350,
+      muzza: 300,
+      egg: 220,
+      onionKg: 1400,
+      extras: 350
+    };
+
+    const PRESETS = {
+      classic: { patties: 1, cheddar: 1, bacon: 0, muzza: 0, egg: 0, onion: 'smash' },
+      double: { patties: 2, cheddar: 2, bacon: 0, muzza: 0, egg: 0, onion: 'smash' },
+      bacon_master: { patties: 2, cheddar: 2, bacon: 2, muzza: 0, egg: 0, onion: 'caramelized' },
+      supreme: { patties: 3, cheddar: 2, bacon: 2, muzza: 1, egg: 1, onion: 'caramelized' }
+    };
+
+    let state = {
+      currency: '$',
+      prices: { ...DEFAULT_PRICES },
+      draft: {
+        patties: 2,
+        cheddar: 2,
+        bacon: 1,
+        muzza: 0,
+        egg: 0,
+        onion: 'smash',
+        qty: 1
+      },
+      order: [],
+      activeTab: 'config' // 'config' | 'cart'
+    };
+
+    const STORAGE_KEY = 'ATELIER_SMASH_GOURMET_STATE_V1';
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state.currency = parsed.currency || '$';
+          state.prices = { ...DEFAULT_PRICES, ...parsed.prices };
+          state.order = parsed.order || [];
+        }
+      } catch (e) {
+        console.error('Error loading state:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          currency: state.currency,
+          prices: state.prices,
+          order: state.order
+        }));
+      } catch (e) {
+        console.error('Error saving state:', e);
+      }
+    }
+
+    function calculateSingleBurgerCost(config) {
+      const p = state.prices;
+      const beefCost = (config.patties * 0.090) * p.beefKg; // 90g per patty
+      const bunCost = p.bun;
+      const cheddarCost = config.cheddar * p.cheddar;
+      const baconCost = config.bacon * p.bacon;
+      const muzzaCost = config.muzza * p.muzza;
+      const eggCost = config.egg * p.egg;
+      const onionCost = config.onion !== 'none' ? (0.080 * p.onionKg) : 0; // ~80g onion per burger
+      const extrasCost = p.extras;
+
+      return beefCost + bunCost + cheddarCost + baconCost + muzzaCost + eggCost + onionCost + extrasCost;
+    }
+
+    function formatMoney(amount) {
+      return `${state.currency} ${Math.round(amount).toLocaleString()}`;
+    }
+
+    function showToast(message, icon = '✨') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'gourmet-card px-4 py-3 rounded-xl border border-amber-500/30 text-xs font-semibold text-white shadow-2xl flex items-center gap-2 transform translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto';
+      toast.innerHTML = `<span class="text-base">${icon}</span> <span>${message}</span>`;
+      
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      const sectionConfig = document.getElementById('section-config');
+      const sectionCart = document.getElementById('section-cart');
+      const tabBtnConfig = document.getElementById('tab-btn-config');
+      const tabBtnCart = document.getElementById('tab-btn-cart');
+
+      if (window.innerWidth < 1024) {
+        if (tab === 'config') {
+          sectionConfig.classList.remove('hidden');
+          sectionCart.classList.add('hidden');
+          tabBtnConfig.className = 'flex-1 py-2.5 rounded-xl text-center transition-all bg-amber-500 text-slate-950 font-bold shadow';
+          tabBtnCart.className = 'flex-1 py-2.5 rounded-xl text-center transition-all text-brand-muted hover:text-white flex items-center justify-center gap-1.5';
+        } else {
+          sectionConfig.classList.add('hidden');
+          sectionCart.classList.remove('hidden');
+          tabBtnCart.className = 'flex-1 py-2.5 rounded-xl text-center transition-all bg-amber-500 text-slate-950 font-bold shadow';
+          tabBtnConfig.className = 'flex-1 py-2.5 rounded-xl text-center transition-all text-brand-muted hover:text-white flex items-center justify-center gap-1.5';
+        }
+      } else {
+        sectionConfig.classList.remove('hidden');
+        sectionCart.classList.remove('hidden');
+      }
+    }
+
+    function updateDraft(key, delta) {
+      const minVal = key === 'qty' ? 1 : 0;
+      const maxVal = key === 'patties' ? 4 : 6;
+      state.draft[key] = Math.min(maxVal, Math.max(minVal, (state.draft[key] || 0) + delta));
+      renderDraftControls();
+    }
+
+    function updateDraftOnion(val) {
+      state.draft.onion = val;
+      renderDraftControls();
+    }
+
+    function applyPreset(presetKey) {
+      if (!PRESETS[presetKey]) return;
+      const p = PRESETS[presetKey];
+      state.draft.patties = p.patties;
+      state.draft.cheddar = p.cheddar;
+      state.draft.bacon = p.bacon;
+      state.draft.muzza = p.muzza;
+      state.draft.egg = p.egg;
+      state.draft.onion = p.onion;
+      
+      document.getElementById('ctrl-onion').value = p.onion;
+      renderDraftControls();
+      showToast('Receta aplicada');
+    }
+
+    function renderDraftControls() {
+      document.getElementById('ctrl-patties').innerText = state.draft.patties;
+      document.getElementById('ctrl-cheddar').innerText = state.draft.cheddar;
+      document.getElementById('ctrl-bacon').innerText = state.draft.bacon;
+      document.getElementById('ctrl-muzza').innerText = state.draft.muzza;
+      document.getElementById('ctrl-egg').innerText = state.draft.egg;
+      document.getElementById('ctrl-qty').innerText = state.draft.qty;
+
+      const singleCost = calculateSingleBurgerCost(state.draft);
+      const batchCost = singleCost * state.draft.qty;
+
+      document.getElementById('draft-unit-cost').innerText = `${formatMoney(singleCost)} c/u`;
+      document.getElementById('draft-batch-total').innerText = `(${formatMoney(batchCost)})`;
+    }
+
+    function addCurrentDraftToOrder() {
+      const newItem = {
+        id: 'item_' + Date.now(),
+        patties: state.draft.patties,
+        cheddar: state.draft.cheddar,
+        bacon: state.draft.bacon,
+        muzza: state.draft.muzza,
+        egg: state.draft.egg,
+        onion: state.draft.onion,
+        qty: state.draft.qty
+      };
+
+      // Check if identical config exists to merge
+      const existing = state.order.find(i => 
+        i.patties === newItem.patties &&
+        i.cheddar === newItem.cheddar &&
+        i.bacon === newItem.bacon &&
+        i.muzza === newItem.muzza &&
+        i.egg === newItem.egg &&
+        i.onion === newItem.onion
+      );
+
+      if (existing) {
+        existing.qty += newItem.qty;
+      } else {
+        state.order.push(newItem);
+      }
+
+      state.draft.qty = 1;
+      saveState();
+      renderApp();
+      showToast('¡Hamburguesa añadida al pedido!', '🍔');
+    }
+
+    function updateOrderItemQty(id, delta) {
+      const item = state.order.find(i => i.id === id);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        state.order = state.order.filter(i => i.id !== id);
+      }
+
+      saveState();
+      renderApp();
+    }
+
+    function removeOrderItem(id) {
+      state.order = state.order.filter(i => i.id !== id);
+      saveState();
+      renderApp();
+      showToast('Ítem eliminado', '🗑️');
+    }
+
+    function resetOrder() {
+      if (state.order.length === 0) return;
+      state.order = [];
+      saveState();
+      renderApp();
+      showToast('Pedido reiniciado', '🔄');
+    }
+
+    function getOnionLabel(onion) {
+      switch(onion) {
+        case 'smash': return 'Smash';
+        case 'caramelized': return 'Caramelizada';
+        case 'fresh': return 'Fresca';
+        default: return 'Sin Cebolla';
+      }
+    }
+
+    function renderOrderList() {
+      const container = document.getElementById('order-items-container');
+      const emptyState = document.getElementById('empty-order-state');
+      const badge = document.getElementById('order-count-badge');
+      const tabBadge = document.getElementById('tab-cart-badge');
+      const mobileBadge = document.getElementById('mobile-float-badge');
+
+      const totalVarieties = state.order.length;
+      badge.innerText = `${totalVarieties} Variedades`;
+      tabBadge.innerText = totalVarieties;
+      mobileBadge.innerText = totalVarieties;
+
+      if (totalVarieties === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      container.innerHTML = state.order.map((item, idx) => {
+        const unitCost = calculateSingleBurgerCost(item);
+        const subtotal = unitCost * item.qty;
+
+        const specs = [];
+        specs.push(`${item.patties}x Carne (${item.patties * 90}g)`);
+        if (item.cheddar > 0) specs.push(`${item.cheddar}x Cheddar`);
+        if (item.bacon > 0) specs.push(`${item.bacon}x Bacon`);
+        if (item.muzza > 0) specs.push(`${item.muzza}x Muzza`);
+        if (item.egg > 0) specs.push(`${item.egg}x Huevo`);
+        if (item.onion !== 'none') specs.push(`Cebolla ${getOnionLabel(item.onion)}`);
+
+        return `
+          <div class="bg-[#0E1015] border border-white/10 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="font-serif font-bold text-xs text-amber-400">#${idx + 1}</span>
+                <span class="text-xs font-bold text-slate-200">${formatMoney(unitCost)} c/u</span>
+              </div>
+              <p class="text-[11px] text-brand-muted">
+                ${specs.join(' • ')}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1.5 bg-[#171922] p-1 rounded-xl border border-white/10">
+                <button onclick="updateOrderItemQty('${item.id}', -1)" class="btn-touch w-6 h-6 rounded bg-[#0E1015] text-amber-400 font-bold flex items-center justify-center text-xs">-</button>
+                <span class="font-bold text-amber-400 text-xs px-1.5">${item.qty} u.</span>
+                <button onclick="updateOrderItemQty('${item.id}', 1)" class="btn-touch w-6 h-6 rounded bg-[#0E1015] text-amber-400 font-bold flex items-center justify-center text-xs">+</button>
+              </div>
+
+              <div class="font-serif font-bold text-xs text-white min-w-[70px] text-right">
+                ${formatMoney(subtotal)}
+              </div>
+
+              <button onclick="removeOrderItem('${item.id}')" class="text-brand-muted hover:text-red-400 text-sm p-1">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderShoppingListAndSummary() {
+      const shoppingEl = document.getElementById('shopping-list');
+      const totalBurgersEl = document.getElementById('summary-total-burgers');
+      const grandTotalEl = document.getElementById('summary-grand-total');
+      const headerGrandTotalEl = document.getElementById('header-grand-total');
+      const mobileFloatTotalEl = document.getElementById('mobile-float-total');
+      const avgCostEl = document.getElementById('summary-avg-cost');
+
+      let totals = {
+        burgers: 0,
+        beefGrams: 0,
+        buns: 0,
+        cheddar: 0,
+        bacon: 0,
+        muzza: 0,
+        eggs: 0,
+        onionGrams: 0
+      };
+
+      let grandTotal = 0;
+
+      state.order.forEach(item => {
+        const itemQty = item.qty;
+        totals.burgers += itemQty;
+        totals.beefGrams += (item.patties * 90) * itemQty;
+        totals.buns += itemQty;
+        totals.cheddar += item.cheddar * itemQty;
+        totals.bacon += item.bacon * itemQty;
+        totals.muzza += item.muzza * itemQty;
+        totals.eggs += item.egg * itemQty;
+        if (item.onion !== 'none') totals.onionGrams += 80 * itemQty;
+
+        grandTotal += calculateSingleBurgerCost(item) * itemQty;
+      });
+
+      totalBurgersEl.innerText = `${totals.burgers} Burgers Total`;
+      grandTotalEl.innerText = formatMoney(grandTotal);
+      headerGrandTotalEl.innerText = formatMoney(grandTotal);
+      mobileFloatTotalEl.innerText = formatMoney(grandTotal);
+      avgCostEl.innerText = formatMoney(totals.burgers > 0 ? (grandTotal / totals.burgers) : 0);
+
+      if (totals.burgers === 0) {
+        shoppingEl.innerHTML = `<li class="text-brand-muted italic py-4 text-center">Añade hamburguesas para ver la lista de insumos.</li>`;
+        return;
+      }
+
+      const beefKg = (totals.beefGrams / 1000).toFixed(2);
+      const onionKg = (totals.onionGrams / 1000).toFixed(2);
+
+      shoppingEl.innerHTML = `
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🥩 <strong>Carne Vacuna:</strong></span>
+          <span class="font-bold text-amber-400">${beefKg} kg (${totals.beefGrams}g)</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🍞 <strong>Pan Brioche:</strong></span>
+          <span class="font-bold text-slate-200">${totals.buns} unidades</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🧀 <strong>Queso Cheddar:</strong></span>
+          <span class="font-bold text-slate-200">${totals.cheddar} fetas</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🥓 <strong>Panceta Crocante:</strong></span>
+          <span class="font-bold text-slate-200">${totals.bacon} tiras</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🍕 <strong>Queso Mozzarella:</strong></span>
+          <span class="font-bold text-slate-200">${totals.muzza} fetas</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🍳 <strong>Huevos Fritos:</strong></span>
+          <span class="font-bold text-slate-200">${totals.eggs} u.</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-white/10">
+          <span>🧅 <strong>Cebolla Estimada:</strong></span>
+          <span class="font-bold text-slate-200">~${onionKg} kg</span>
+        </li>
+        <li class="flex justify-between items-center py-2">
+          <span>📦 <strong>Empaque / Servilletas:</strong></span>
+          <span class="font-bold text-brand-muted">${totals.burgers} raciones</span>
+        </li>
+      `;
+    }
+
+    function renderApp() {
+      renderDraftControls();
+      renderOrderList();
+      renderShoppingListAndSummary();
+    }
+
+    function copyWhatsAppList() {
+      if (state.order.length === 0) {
+        showToast('Agrega hamburguesas antes de exportar', '⚠️');
+        return;
+      }
+
+      let totals = { burgers: 0, beefGrams: 0, buns: 0, cheddar: 0, bacon: 0, muzza: 0, eggs: 0, grandTotal: 0 };
+
+      let orderLines = '';
+      state.order.forEach((item, idx) => {
+        const itemQty = item.qty;
+        const itemCost = calculateSingleBurgerCost(item) * itemQty;
+        totals.burgers += itemQty;
+        totals.beefGrams += (item.patties * 90) * itemQty;
+        totals.buns += itemQty;
+        totals.cheddar += item.cheddar * itemQty;
+        totals.bacon += item.bacon * itemQty;
+        totals.muzza += item.muzza * itemQty;
+        totals.eggs += item.egg * itemQty;
+        totals.grandTotal += itemCost;
+
+        orderLines += `• *${itemQty}x* (${item.patties}x Carne, ${item.cheddar}x Cheddar, ${item.bacon}x Bacon) -> ${formatMoney(itemCost)}\n`;
+      });
+
+      const text = 
+`👑 *ATELIER SMASH - PEDIDO GOURMET* 🍔
+----------------------------------------
+🍔 *Hamburguesas Totales:* ${totals.burgers}
+💰 *COSTO ESTIMADO TOTAL:* ${formatMoney(totals.grandTotal)}
+
+🛒 *LISTA DE INSUMOS SUPERMERCADO:*
+• Carne Vacuna: *${(totals.beefGrams / 1000).toFixed(2)} kg* (${totals.beefGrams}g)
+• Pan Brioche: *${totals.buns} unidades*
+• Cheddar: *${totals.cheddar} fetas*
+• Panceta Crocante: *${totals.bacon} tiras*
+• Mozzarella: *${totals.muzza} fetas*
+• Huevos: *${totals.eggs} u.*
+
+📋 *DETALLE DE VARIACIONES:*
+${orderLines}
+----------------------------------------
+Calculado con Atelier Smash Gourmet 🚀`;
+
+      const el = document.createElement('textarea');
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      showToast('¡Lista para WhatsApp copiada!', '💬');
+    }
+
+    function setupPricesModal() {
+      const modal = document.getElementById('prices-modal');
+      const openBtn = document.getElementById('btn-open-prices');
+      const closeBtn = document.getElementById('btn-close-prices');
+      const saveBtn = document.getElementById('btn-save-prices');
+      const resetBtn = document.getElementById('btn-reset-default-prices');
+
+      openBtn.addEventListener('click', () => {
+        document.getElementById('input-currency').value = state.currency;
+        document.getElementById('price-beef-kg').value = state.prices.beefKg;
+        document.getElementById('price-bun').value = state.prices.bun;
+        document.getElementById('price-cheddar').value = state.prices.cheddar;
+        document.getElementById('price-bacon').value = state.prices.bacon;
+        document.getElementById('price-muzza').value = state.prices.muzza;
+        document.getElementById('price-egg').value = state.prices.egg;
+        document.getElementById('price-onion-kg').value = state.prices.onionKg;
+        document.getElementById('price-extras').value = state.prices.extras;
+
+        modal.classList.remove('hidden');
+      });
+
+      closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+      saveBtn.addEventListener('click', () => {
+        state.currency = document.getElementById('input-currency').value;
+        state.prices.beefKg = parseFloat(document.getElementById('price-beef-kg').value) || 0;
+        state.prices.bun = parseFloat(document.getElementById('price-bun').value) || 0;
+        state.prices.cheddar = parseFloat(document.getElementById('price-cheddar').value) || 0;
+        state.prices.bacon = parseFloat(document.getElementById('price-bacon').value) || 0;
+        state.prices.muzza = parseFloat(document.getElementById('price-muzza').value) || 0;
+        state.prices.egg = parseFloat(document.getElementById('price-egg').value) || 0;
+        state.prices.onionKg = parseFloat(document.getElementById('price-onion-kg').value) || 0;
+        state.prices.extras = parseFloat(document.getElementById('price-extras').value) || 0;
+
+        saveState();
+        renderApp();
+        modal.classList.add('hidden');
+        showToast('Precios guardados correctamente');
+      });
+
+      resetBtn.addEventListener('click', () => {
+        state.prices = { ...DEFAULT_PRICES };
+        document.getElementById('price-beef-kg').value = DEFAULT_PRICES.beefKg;
+        document.getElementById('price-bun').value = DEFAULT_PRICES.bun;
+        document.getElementById('price-cheddar').value = DEFAULT_PRICES.cheddar;
+        document.getElementById('price-bacon').value = DEFAULT_PRICES.bacon;
+        document.getElementById('price-muzza').value = DEFAULT_PRICES.muzza;
+        document.getElementById('price-egg').value = DEFAULT_PRICES.egg;
+        document.getElementById('price-onion-kg').value = DEFAULT_PRICES.onionKg;
+        document.getElementById('price-extras').value = DEFAULT_PRICES.extras;
+      });
+    }
+
+    window.onload = function() {
+      loadState();
+      setupPricesModal();
+      renderApp();
+      window.addEventListener('resize', () => switchTab(state.activeTab));
+    };
+  </script>
+</body>
+</html>
