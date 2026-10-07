@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmic Smash Diner - Calculadora de Hamburguesas</title>
+  
+  <!-- Google Fonts: Righteous for Googie retro headlines, Orbitron for tech stats, Plus Jakarta Sans for UI text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Righteous&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cosmic: {
+              bg: '#0a0b16',
+              card: 'rgba(20, 22, 45, 0.85)',
+              border: 'rgba(255, 42, 133, 0.3)',
+              pink: '#ff2a85',
+              cyan: '#00f0ff',
+              yellow: '#ffe600',
+              silver: '#e2e8f0'
+            }
+          },
+          fontFamily: {
+            retro: ['Righteous', 'cursive'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Retro Diner & Space Age Effects */
+    body {
+      background-color: #0a0b16;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(255, 42, 133, 0.15) 0%, transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(0, 240, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(2px 2px at 40px 60px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 150px 120px, rgba(255, 255, 255, 0.8), rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 280px 200px, #00f0ff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 400px 320px, #ff2a85, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 100% 100%, 100% 100%, 350px 350px, 400px 400px, 300px 300px, 500px 500px;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Glowing Text & Neon Borders */
+    .glow-pink {
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.8), 0 0 20px rgba(255, 42, 133, 0.4);
+    }
+    .glow-cyan {
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
+    }
+    .glow-yellow {
+      text-shadow: 0 0 8px rgba(255, 230, 0, 0.8);
+    }
+
+    .border-glow-pink {
+      box-shadow: 0 0 15px rgba(255, 42, 133, 0.25), inset 0 0 15px rgba(255, 42, 133, 0.1);
+      border-color: #ff2a85;
+    }
+    .border-glow-cyan {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1);
+      border-color: #00f0ff;
+    }
+
+    /* Glassmorphism Card Style */
+    .diner-card {
+      background: rgba(18, 20, 41, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    /* Retro Kiosk Button Press Effect */
+    .btn-kiosk {
+      transition: all 0.15s ease-in-out;
+      position: relative;
+    }
+    .btn-kiosk:active {
+      transform: translateY(2px) scale(0.98);
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0b16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2a2d54;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff2a85;
+    }
+
+    /* Stacked Visual Burger Layer Styles */
+    .burger-layer {
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
+</head>
+<body class="font-sans pb-16">
+
+  <!-- Top Navigation / Header -->
+  <header class="sticky top-0 z-40 diner-card border-b border-cosmic-pink/30 px-4 py-3 mb-6">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-cosmic-pink via-purple-600 to-cosmic-cyan p-0.5 shadow-lg shadow-cosmic-pink/30 flex items-center justify-center">
+          <div class="w-full h-full bg-cosmic-bg rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-cosmic-yellow animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <h1 class="font-retro text-2xl md:text-3xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cosmic-pink via-cosmic-yellow to-cosmic-cyan glow-pink">
+            COSMIC SMASH
+          </h1>
+          <p class="text-xs font-orbitron text-cosmic-cyan tracking-widest uppercase">Space Age Burger Calculator</p>
+        </div>
+      </div>
+
+      <!-- Quick Summary Badges & Settings Trigger -->
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700/60 font-orbitron text-xs">
+          <span class="text-slate-400">Burgers:</span>
+          <span id="header-burger-count" class="text-cosmic-yellow font-bold">0</span>
+        </div>
+        <div class="hidden sm:flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700/60 font-orbitron text-xs">
+          <span class="text-slate-400">Total:</span>
+          <span id="header-total-cost" class="text-cosmic-cyan font-bold">$0</span>
+        </div>
+
+        <button id="btn-open-prices" class="btn-kiosk flex items-center space-x-2 bg-gradient-to-r from-cosmic-pink to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold text-xs md:text-sm px-4 py-2 rounded-xl shadow-lg shadow-cosmic-pink/20 border border-pink-400/30">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Precios e Insumos</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+    <!-- LEFT COLUMN: People Management & Burger Builder (7 cols) -->
+    <section class="lg:col-span-7 space-y-6">
+      
+      <!-- Add Person Panel -->
+      <div class="diner-card rounded-2xl p-5 border border-cosmic-pink/30 relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-cosmic-pink/10 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-retro text-xl text-cosmic-yellow flex items-center gap-2">
+            <span>👥</span> tripulación & Comensales
+          </h2>
+          <button id="btn-quick-demo" class="text-xs text-cosmic-cyan hover:underline font-orbitron">
+            + Cargar Demo Ejemplo
+          </button>
+        </div>
+
+        <form id="form-add-person" class="flex gap-2">
+          <input 
+            type="text" 
+            id="input-person-name" 
+            placeholder="Nombre del comensal (ej. Lucas, Sofi, Marto)..." 
+            class="flex-1 bg-slate-900/90 border border-slate-700 focus:border-cosmic-pink focus:outline-none rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-colors"
+            required
+          >
+          <button 
+            type="submit" 
+            class="btn-kiosk bg-cosmic-cyan hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-1.5 shadow-md shadow-cosmic-cyan/20 shrink-0"
+          >
+            <span>+ Agregar</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- People Accordion / Tabs List -->
+      <div id="people-container" class="space-y-4">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Empty State Graphic -->
+      <div id="empty-people-state" class="diner-card rounded-2xl p-8 text-center border border-dashed border-slate-700/80">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-slate-800/80 flex items-center justify-center text-3xl">
+          🍔
+        </div>
+        <h3 class="font-retro text-lg text-slate-300">¡Tu Nave Diner está Vacía!</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+          Agrega comensales con el campo superior para armar sus hamburguesas smash a medida con el kiosko interactivo.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: Visual Stacker & Vaquita / Shopping Summary (5 cols) -->
+    <section class="lg:col-span-5 space-y-6">
+
+      <!-- Live Burger Visualizer Box -->
+      <div class="diner-card rounded-2xl p-5 border border-cosmic-cyan/30 text-center relative overflow-hidden">
+        <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+          <h3 class="font-retro text-sm text-cosmic-cyan tracking-wider uppercase flex items-center gap-2">
+            <span>🚀</span> Previsualizador Estelar
+          </h3>
+          <span id="visualizer-burger-title" class="text-xs font-orbitron text-cosmic-yellow font-bold">
+            Selecciona una Hamburguesa
+          </span>
+        </div>
+
+        <!-- Burger Graphical Container -->
+        <div class="min-h-[220px] flex items-center justify-center py-4 bg-slate-950/60 rounded-xl border border-slate-800/80 relative">
+          <div id="burger-graphic-stack" class="flex flex-col items-center justify-center transition-all">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+        
+        <p class="text-[11px] text-slate-400 mt-2 italic">
+          Cada medallón de carne es de <strong class="text-cosmic-yellow">90g de carne picada de vaca</strong> smash.
+        </p>
+      </div>
+
+      <!-- Consolidated Shopping List Card -->
+      <div class="diner-card rounded-2xl p-5 border border-cosmic-yellow/30 relative">
+        <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+          <h3 class="font-retro text-lg text-cosmic-yellow flex items-center gap-2">
+            <span>🛒</span> Lista Consolidada de Compras
+          </h3>
+          <span id="summary-total-burgers-badge" class="bg-cosmic-yellow/10 text-cosmic-yellow font-orbitron text-xs px-2.5 py-1 rounded-lg border border-cosmic-yellow/30">
+            0 Burgers Total
+          </span>
+        </div>
+
+        <ul id="shopping-list" class="space-y-2 text-xs md:text-sm text-slate-300">
+          <!-- Dynamically populated -->
+        </ul>
+      </div>
+
+      <!-- La Vaquita Cost Division Card -->
+      <div class="diner-card rounded-2xl p-5 border border-cosmic-pink/30 bg-gradient-to-b from-cosmic-card to-slate-950/90">
+        <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-retro text-xl text-cosmic-pink glow-pink flex items-center gap-2">
+              <span>💰</span> La Vaquita Space Diner
+            </h3>
+            <p class="text-[11px] text-slate-400">Desglose de costos individuales exactos</p>
+          </div>
+          <button id="btn-copy-whatsapp" class="btn-kiosk bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
+            <span>💬 Copiar para WhatsApp</span>
+          </button>
+        </div>
+
+        <!-- Costs breakdown per person -->
+        <div id="vaquita-person-list" class="space-y-2 max-h-60 overflow-y-auto pr-1 mb-4">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Total Grand Summary -->
+        <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 space-y-1.5 text-xs font-orbitron">
+          <div class="flex justify-between text-slate-400">
+            <span>Costo Promedio / Burger:</span>
+            <span id="vaquita-avg-burger" class="text-slate-200">$0</span>
+          </div>
+          <div class="flex justify-between text-base text-cosmic-cyan font-bold pt-1 border-t border-slate-800">
+            <span>TOTAL EVENTO:</span>
+            <span id="vaquita-grand-total" class="text-cosmic-cyan glow-cyan">$0</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: Prices & Settings Panel -->
+  <div id="prices-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="diner-card w-full max-w-lg rounded-2xl border border-cosmic-pink/40 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">⚙️</span>
+          <div>
+            <h3 class="font-retro text-lg text-cosmic-pink">Configuración de Precios & Insumos</h3>
+            <p class="text-xs text-slate-400">Ajusta los costos reales del supermercado/carnicería</p>
+          </div>
+        </div>
+        <button id="btn-close-prices" class="text-slate-400 hover:text-white text-xl font-bold p-1">
+          &times;
+        </button>
+      </div>
+
+      <!-- Modal Form Body -->
+      <div class="p-5 overflow-y-auto space-y-4 text-xs md:text-sm">
+        
+        <!-- Currency Selector -->
+        <div class="flex items-center justify-between bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+          <label for="input-currency" class="font-semibold text-slate-300">Moneda de Cálculo:</label>
+          <select id="input-currency" class="bg-slate-950 border border-slate-700 text-cosmic-cyan font-orbitron rounded-lg px-3 py-1.5 focus:outline-none focus:border-cosmic-cyan">
+            <option value="$">$ (Pesos / Dólares General)</option>
+            <option value="ARS">ARS ($ Argentina)</option>
+            <option value="UYU">UYU ($ Uruguay)</option>
+            <option value="USD">USD ($ Dólar)</option>
+            <option value="EUR">EUR (€ Euro)</option>
+          </select>
+        </div>
+
+        <!-- Prices Inputs Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          
+          <!-- Beef Price per kg -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🥩 Carne Picada de Vaca (/kg)</label>
+            <p class="text-[10px] text-slate-400">Cada medallón smash es de 90g</p>
+            <input type="number" id="price-beef-kg" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Burger Buns -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🍞 Pan de Hamburguesa (/unidad)</label>
+            <p class="text-[10px] text-slate-400">Pan Brioche / Papas</p>
+            <input type="number" id="price-bun" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Cheddar Cheese -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🧀 Queso Cheddar (/feta)</label>
+            <p class="text-[10px] text-slate-400">Precio unitario por feta</p>
+            <input type="number" id="price-cheddar" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Bacon -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🥓 Panceta / Bacon (/tira)</label>
+            <p class="text-[10px] text-slate-400">Precio por tira ahumada</p>
+            <input type="number" id="price-bacon" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Mozzarella -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🧀 Mozzarella (/feta)</label>
+            <p class="text-[10px] text-slate-400">Precio unitario por feta</p>
+            <input type="number" id="price-muzza" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Eggs -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🍳 Huevos (/unidad)</label>
+            <p class="text-[10px] text-slate-400">Precio por huevo fresco</p>
+            <input type="number" id="price-egg" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Onions -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">🧅 Cebollas (/kg)</label>
+            <p class="text-[10px] text-slate-400">Smash o picada finamente</p>
+            <input type="number" id="price-onion-kg" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+          <!-- Extras & Packaging per burger -->
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 space-y-1">
+            <label class="block text-slate-300 font-semibold">📦 Aderezos y Papel (/burger)</label>
+            <p class="text-[10px] text-slate-400">Mayo, kétchup, servilletas, wrapping</p>
+            <input type="number" id="price-extras" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-cosmic-yellow font-orbitron focus:outline-none focus:border-cosmic-pink">
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Actions Footer -->
+      <div class="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between">
+        <button id="btn-reset-default-prices" class="text-xs text-slate-400 hover:text-cosmic-pink">
+          Restablecer Valores Base
+        </button>
+        <button id="btn-save-prices" class="btn-kiosk bg-cosmic-pink hover:bg-pink-600 text-white font-bold px-5 py-2 rounded-xl text-sm shadow-md shadow-cosmic-pink/30">
+          Guardar Cambios
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    /* COSMIC SMASH DINER - STATE MANAGEMENT & APPLICATION LOGIC */
+
+    // Default prices template (in local units)
+    const DEFAULT_PRICES = {
+      beefKg: 8500,        // Carne picada por kg
+      bun: 350,            // Pan por unidad
+      cheddar: 220,        // Cheddar por feta
+      bacon: 280,          // Bacon por tira
+      muzza: 240,          // Mozzarella por feta
+      egg: 200,            // Huevo por unidad
+      onionKg: 1200,       // Cebolla por kg (~80g per burger onion smash)
+      extras: 300          // Aderezos/empaque por burger
+    };
+
+    // Quick Burger Presets
+    const PRESETS = {
+      clasica: { name: 'Smash Clásica', patties: 1, cheddar: 1, bacon: 0, muzza: 0, egg: 0, onion: 'smash' },
+      dobleBacon: { name: 'Doble Bacon Cheddar', patties: 2, cheddar: 2, bacon: 2, muzza: 0, egg: 0, onion: 'smash' },
+      tripleMonster: { name: 'Cosmic Monster Triple', patties: 3, cheddar: 3, bacon: 2, muzza: 0, egg: 1, onion: 'smash' },
+      huevoMuzza: { name: 'Smash Huevo & Muzza', patties: 2, cheddar: 0, bacon: 1, muzza: 2, egg: 1, onion: 'chopped' }
+    };
+
+    // Main App State
+    let state = {
+      currency: '$',
+      prices: { ...DEFAULT_PRICES },
+      people: [],
+      activeBurgerSelection: null // { personId, burgerId }
+    };
+
+    // Storage Key
+    const STORAGE_KEY = 'COSMIC_SMASH_DINER_STATE_V1';
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state.currency = parsed.currency || '$';
+          state.prices = { ...DEFAULT_PRICES, ...parsed.prices };
+          state.people = parsed.people || [];
+        }
+      } catch (e) {
+        console.error('Error loading state from localStorage:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          currency: state.currency,
+          prices: state.prices,
+          people: state.people
+        }));
+      } catch (e) {
+        console.error('Error saving state to localStorage:', e);
+      }
+    }
+
+    // Cost of a single burger based on current prices
+    function calculateBurgerCost(burger, prices) {
+      const beefCost = (burger.patties * 0.090) * prices.beefKg; // 90g per patty
+      const bunCost = prices.bun;
+      const cheddarCost = burger.cheddar * prices.cheddar;
+      const baconCost = burger.bacon * prices.bacon;
+      const muzzaCost = burger.muzza * prices.muzza;
+      const eggCost = burger.egg * prices.egg;
+      // Onion portion approx 80g if smash/chopped
+      const onionCost = burger.onion !== 'none' ? (0.080 * prices.onionKg) : 0;
+      const extrasCost = prices.extras;
+
+      return beefCost + bunCost + cheddarCost + baconCost + muzzaCost + eggCost + onionCost + extrasCost;
+    }
+
+    // Total cost for a person
+    function calculatePersonTotal(person, prices) {
+      return person.burgers.reduce((total, burger) => total + calculateBurgerCost(burger, prices), 0);
+    }
+
+    // Format currency Helper
+    function formatMoney(amount) {
+      return `${state.currency} ${Math.round(amount).toLocaleString()}`;
+    }
+
+    function showToast(message, icon = '🚀') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'diner-card px-4 py-3 rounded-xl border border-cosmic-cyan text-xs font-semibold text-white shadow-xl flex items-center gap-2 transform translate-y-4 opacity-0 transition-all duration-300';
+      toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+      
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function renderApp() {
+      renderHeader();
+      renderPeople();
+      renderBurgerVisualizer();
+      renderShoppingListAndVaquita();
+    }
+
+    function renderHeader() {
+      let totalBurgers = 0;
+      let grandTotal = 0;
+
+      state.people.forEach(p => {
+        totalBurgers += p.burgers.length;
+        grandTotal += calculatePersonTotal(p, state.prices);
+      });
+
+      document.getElementById('header-burger-count').innerText = totalBurgers;
+      document.getElementById('header-total-cost').innerText = formatMoney(grandTotal);
+    }
+
+    function renderPeople() {
+      const container = document.getElementById('people-container');
+      const emptyState = document.getElementById('empty-people-state');
+
+      if (state.people.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = state.people.map(person => {
+        const personTotal = calculatePersonTotal(person, state.prices);
+        
+        return `
+          <div class="diner-card rounded-2xl border border-slate-800 hover:border-cosmic-pink/40 transition-colors overflow-hidden">
+            <!-- Person Header Bar -->
+            <div class="bg-slate-900/80 p-4 flex items-center justify-between border-b border-slate-800">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-lg">
+                  👤
+                </div>
+                <div>
+                  <h3 class="font-retro text-lg text-slate-100">${escapeHtml(person.name)}</h3>
+                  <p class="text-xs text-slate-400 font-orbitron">
+                    ${person.burgers.length} burger(s) • <span class="text-cosmic-cyan font-semibold">${formatMoney(personTotal)}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button 
+                  onclick="addBurgerToPerson('${person.id}')"
+                  class="btn-kiosk bg-cosmic-pink/20 hover:bg-cosmic-pink/30 text-cosmic-pink border border-cosmic-pink/40 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1"
+                >
+                  <span>+ Agregar Burger</span>
+                </button>
+                <button 
+                  onclick="removePerson('${person.id}')"
+                  class="text-slate-500 hover:text-red-400 p-1.5 rounded-lg text-sm"
+                  title="Eliminar persona"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+
+            <!-- Person's Burgers List -->
+            <div class="p-4 space-y-4">
+              ${person.burgers.length === 0 ? `
+                <div class="text-center py-4 text-xs text-slate-500 italic">
+                  Esta persona aún no tiene hamburguesas asignadas.
+                </div>
+              ` : person.burgers.map((burger, bIdx) => renderBurgerItem(person, burger, bIdx)).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderBurgerItem(person, burger, bIdx) {
+      const burgerCost = calculateBurgerCost(burger, state.prices);
+      const isSelectedForVisual = state.activeBurgerSelection && 
+                                state.activeBurgerSelection.personId === person.id && 
+                                state.activeBurgerSelection.burgerId === burger.id;
+
+      return `
+        <div class="bg-slate-950/70 border ${isSelectedForVisual ? 'border-cosmic-cyan border-glow-cyan' : 'border-slate-800'} rounded-xl p-4 transition-all">
+          
+          <!-- Burger Header & Presets Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-800/80">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🍔</span>
+              <span class="font-orbitron font-bold text-xs text-cosmic-yellow">
+                Burger #${bIdx + 1}
+              </span>
+              <span class="text-xs text-slate-400 font-orbitron bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                ${formatMoney(burgerCost)}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <!-- Preset Selector Dropdown -->
+              <select 
+                onchange="applyPreset('${person.id}', '${burger.id}', this.value)"
+                class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1 focus:outline-none focus:border-cosmic-pink"
+              >
+                <option value="">⚡ Presets Rpidos...</option>
+                <option value="clasica">Smash Clásica</option>
+                <option value="dobleBacon">Doble Bacon Cheddar</option>
+                <option value="tripleMonster">Cosmic Monster Triple</option>
+                <option value="huevoMuzza">Smash Huevo & Muzza</option>
+              </select>
+
+              <button 
+                onclick="setActiveVisualizer('${person.id}', '${burger.id}')"
+                class="btn-kiosk text-xs px-2.5 py-1 rounded-lg ${isSelectedForVisual ? 'bg-cosmic-cyan text-slate-950 font-bold' : 'bg-slate-800 text-slate-300 hover:text-white'}"
+              >
+                ${isSelectedForVisual ? '👁️ Viendo' : '👁️ Ver Stack'}
+              </button>
+
+              <button 
+                onclick="removeBurger('${person.id}', '${burger.id}')"
+                class="text-slate-500 hover:text-red-400 text-xs px-1"
+                title="Eliminar esta burger"
+              >
+                ✖
+              </button>
+            </div>
+          </div>
+
+          <!-- McDonald's Kiosk Style Ingredients Controls -->
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5 text-xs">
+            
+            <!-- Patties counter -->
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-semibold block text-slate-200">🥩 Medallones 90g</span>
+                <span class="text-[10px] text-slate-400">Carne Vacuna</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-slate-950 px-1.5 py-0.5 rounded-lg border border-slate-700">
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'patties', -1)" class="w-5 h-5 font-bold text-cosmic-pink hover:bg-slate-800 rounded flex items-center justify-center">-</button>
+                <span class="font-orbitron font-bold text-cosmic-yellow w-4 text-center">${burger.patties}</span>
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'patties', 1)" class="w-5 h-5 font-bold text-cosmic-cyan hover:bg-slate-800 rounded flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <!-- Cheddar Counter -->
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-semibold block text-slate-200">🧀 Cheddar</span>
+                <span class="text-[10px] text-slate-400">Fetas</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-slate-950 px-1.5 py-0.5 rounded-lg border border-slate-700">
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'cheddar', -1)" class="w-5 h-5 font-bold text-cosmic-pink hover:bg-slate-800 rounded flex items-center justify-center">-</button>
+                <span class="font-orbitron font-bold text-cosmic-yellow w-4 text-center">${burger.cheddar}</span>
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'cheddar', 1)" class="w-5 h-5 font-bold text-cosmic-cyan hover:bg-slate-800 rounded flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <!-- Bacon Counter -->
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-semibold block text-slate-200">🥓 Panceta</span>
+                <span class="text-[10px] text-slate-400">Tiras ahumadas</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-slate-950 px-1.5 py-0.5 rounded-lg border border-slate-700">
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'bacon', -1)" class="w-5 h-5 font-bold text-cosmic-pink hover:bg-slate-800 rounded flex items-center justify-center">-</button>
+                <span class="font-orbitron font-bold text-cosmic-yellow w-4 text-center">${burger.bacon}</span>
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'bacon', 1)" class="w-5 h-5 font-bold text-cosmic-cyan hover:bg-slate-800 rounded flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <!-- Mozzarella Counter -->
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-semibold block text-slate-200">🧀 Mozzarella</span>
+                <span class="text-[10px] text-slate-400">Fetas</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-slate-950 px-1.5 py-0.5 rounded-lg border border-slate-700">
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'muzza', -1)" class="w-5 h-5 font-bold text-cosmic-pink hover:bg-slate-800 rounded flex items-center justify-center">-</button>
+                <span class="font-orbitron font-bold text-cosmic-yellow w-4 text-center">${burger.muzza}</span>
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'muzza', 1)" class="w-5 h-5 font-bold text-cosmic-cyan hover:bg-slate-800 rounded flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <!-- Eggs Counter -->
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-semibold block text-slate-200">🍳 Huevo</span>
+                <span class="text-[10px] text-slate-400">Frito a la plancha</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-slate-950 px-1.5 py-0.5 rounded-lg border border-slate-700">
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'egg', -1)" class="w-5 h-5 font-bold text-cosmic-pink hover:bg-slate-800 rounded flex items-center justify-center">-</button>
+                <span class="font-orbitron font-bold text-cosmic-yellow w-4 text-center">${burger.egg}</span>
+                <button onclick="updateIngredient('${person.id}', '${burger.id}', 'egg', 1)" class="w-5 h-5 font-bold text-cosmic-cyan hover:bg-slate-800 rounded flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <!-- Onion Style Selector -->
+            <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-semibold block text-slate-200">🧅 Cebolla</span>
+                <span class="text-[10px] text-slate-400">Estilo</span>
+              </div>
+              <select 
+                onchange="updateOnionStyle('${person.id}', '${burger.id}', this.value)"
+                class="bg-slate-950 border border-slate-700 text-[11px] text-cosmic-cyan rounded px-1.5 py-1 focus:outline-none"
+              >
+                <option value="smash" ${burger.onion === 'smash' ? 'selected' : ''}>Smash</option>
+                <option value="chopped" ${burger.onion === 'chopped' ? 'selected' : ''}>Picada</option>
+                <option value="none" ${burger.onion === 'none' ? 'selected' : ''}>Sin Cebolla</option>
+              </select>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+    function renderBurgerVisualizer() {
+      const container = document.getElementById('burger-graphic-stack');
+      const title = document.getElementById('visualizer-burger-title');
+
+      if (!state.activeBurgerSelection) {
+        // Auto pick first burger if available
+        let firstPersonWithBurger = state.people.find(p => p.burgers.length > 0);
+        if (firstPersonWithBurger) {
+          state.activeBurgerSelection = { personId: firstPersonWithBurger.id, burgerId: firstPersonWithBurger.burgers[0].id };
+        } else {
+          title.innerText = 'Sin Selección';
+          container.innerHTML = `<div class="text-xs text-slate-500 italic py-8">Arma una hamburguesa para ver su gráfica espacial apilada.</div>`;
+          return;
+        }
+      }
+
+      const person = state.people.find(p => p.id === state.activeBurgerSelection.personId);
+      const burger = person ? person.burgers.find(b => b.id === state.activeBurgerSelection.burgerId) : null;
+
+      if (!person || !burger) {
+        state.activeBurgerSelection = null;
+        renderBurgerVisualizer();
+        return;
+      }
+
+      title.innerText = `${person.name} • Burger (${burger.patties}x Smash)`;
+
+      // Dynamic Layer Generator
+      let layersHtml = '';
+
+      // Top Bun
+      layersHtml += `
+        <div class="w-36 h-9 bg-gradient-to-b from-amber-500 via-amber-600 to-amber-700 rounded-t-full shadow-md border-b border-amber-800 flex items-center justify-center relative my-[1px] z-30">
+          <div class="absolute inset-0 flex justify-around items-center opacity-40 text-[8px]">✨ ✨ ✨</div>
+        </div>
+      `;
+
+      // Egg layer if present
+      for (let i = 0; i < burger.egg; i++) {
+        layersHtml += `
+          <div class="w-32 h-4 bg-slate-100 rounded-full my-[1px] relative flex items-center justify-center shadow z-20">
+            <div class="w-6 h-3 bg-yellow-400 rounded-full border border-yellow-500 shadow-inner"></div>
+          </div>
+        `;
+      }
+
+      // Bacon layer if present
+      for (let i = 0; i < burger.bacon; i++) {
+        layersHtml += `
+          <div class="w-34 h-2.5 bg-gradient-to-r from-red-800 via-pink-700 to-red-900 rounded-sm my-[1px] border-y border-red-950 shadow z-20 flex justify-center">
+            <div class="w-20 h-0.5 bg-pink-300 opacity-60"></div>
+          </div>
+        `;
+      }
+
+      // Patties + Cheese Stack
+      for (let i = 0; i < burger.patties; i++) {
+        // Mozzarella or Cheddar melted over patty
+        if (burger.cheddar > i) {
+          layersHtml += `
+            <div class="w-38 h-2.5 bg-yellow-400 rounded-sm -mb-1 z-20 shadow-md transform rotate-1"></div>
+          `;
+        }
+        if (burger.muzza > i) {
+          layersHtml += `
+            <div class="w-38 h-2.5 bg-slate-200 rounded-sm -mb-1 z-20 shadow-md transform -rotate-1"></div>
+          `;
+        }
+
+        // Onion on patty
+        if (burger.onion !== 'none') {
+          layersHtml += `
+            <div class="w-32 h-1.5 bg-purple-300/60 rounded-full my-[1px] z-10 border border-purple-400/30"></div>
+          `;
+        }
+
+        // Beef Patty
+        layersHtml += `
+          <div class="w-36 h-5 bg-gradient-to-b from-amber-950 via-stone-900 to-amber-950 rounded-lg border-b-2 border-stone-950 shadow-md my-[1px] z-10 flex items-center justify-center">
+            <span class="text-[8px] text-amber-600 font-orbitron opacity-40">SMASH 90G</span>
+          </div>
+        `;
+      }
+
+      // Bottom Bun
+      layersHtml += `
+        <div class="w-36 h-5 bg-gradient-to-b from-amber-600 to-amber-700 rounded-b-xl border-t border-amber-800 shadow-lg my-[1px] z-0"></div>
+      `;
+
+      container.innerHTML = layersHtml;
+    }
+
+    function renderShoppingListAndVaquita() {
+      const shoppingListEl = document.getElementById('shopping-list');
+      const vaquitaListEl = document.getElementById('vaquita-person-list');
+      const grandTotalEl = document.getElementById('vaquita-grand-total');
+      const avgBurgerEl = document.getElementById('vaquita-avg-burger');
+      const totalBadge = document.getElementById('summary-total-burgers-badge');
+
+      let totals = {
+        burgers: 0,
+        beefGrams: 0,
+        buns: 0,
+        cheddar: 0,
+        bacon: 0,
+        muzza: 0,
+        eggs: 0,
+        onionGrams: 0
+      };
+
+      state.people.forEach(person => {
+        person.burgers.forEach(b => {
+          totals.burgers += 1;
+          totals.beefGrams += b.patties * 90;
+          totals.buns += 1;
+          totals.cheddar += b.cheddar;
+          totals.bacon += b.bacon;
+          totals.muzza += b.muzza;
+          totals.eggs += b.egg;
+          if (b.onion !== 'none') totals.onionGrams += 80;
+        });
+      });
+
+      totalBadge.innerText = `${totals.burgers} Burgers Total`;
+
+      if (totals.burgers === 0) {
+        shoppingListEl.innerHTML = `<li class="text-slate-500 italic py-2 text-center">Agrega personas y hamburguesas para calcular la lista de súper.</li>`;
+        vaquitaListEl.innerHTML = `<div class="text-slate-500 italic py-2 text-center text-xs">Sin consumo registrado.</div>`;
+        grandTotalEl.innerText = formatMoney(0);
+        avgBurgerEl.innerText = formatMoney(0);
+        return;
+      }
+
+      // Shopping List Items
+      const beefKg = (totals.beefGrams / 1000).toFixed(2);
+      const onionKg = (totals.onionGrams / 1000).toFixed(2);
+
+      shoppingListEl.innerHTML = `
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🥩 <strong>Carne Picada Vacuna:</strong></span>
+          <span class="font-orbitron text-cosmic-yellow font-bold">${beefKg} kg (${totals.beefGrams}g)</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🍞 <strong>Panes de Hamburguesa:</strong></span>
+          <span class="font-orbitron text-cosmic-cyan font-bold">${totals.buns} unidades</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🧀 <strong>Queso Cheddar:</strong></span>
+          <span class="font-orbitron text-slate-200">${totals.cheddar} fetas</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🥓 <strong>Panceta / Bacon:</strong></span>
+          <span class="font-orbitron text-slate-200">${totals.bacon} tiras</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🧀 <strong>Queso Mozzarella:</strong></span>
+          <span class="font-orbitron text-slate-200">${totals.muzza} fetas</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🍳 <strong>Huevos Frescos:</strong></span>
+          <span class="font-orbitron text-slate-200">${totals.eggs} u.</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5 border-b border-slate-800/80">
+          <span class="flex items-center gap-2">🧅 <strong>Cebolla:</strong></span>
+          <span class="font-orbitron text-slate-200">~${onionKg} kg</span>
+        </li>
+        <li class="flex justify-between items-center py-1.5">
+          <span class="flex items-center gap-2">📦 <strong>Servilletas, Aderezos y Empaque:</strong></span>
+          <span class="font-orbitron text-slate-400">${totals.burgers} raciones</span>
+        </li>
+      `;
+
+      // La Vaquita Individual Breakdown
+      let eventGrandTotal = 0;
+
+      vaquitaListEl.innerHTML = state.people.map(person => {
+        const personTotal = calculatePersonTotal(person, state.prices);
+        eventGrandTotal += personTotal;
+
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs">
+            <div>
+              <strong class="text-slate-200 font-retro text-sm">${escapeHtml(person.name)}</strong>
+              <div class="text-[10px] text-slate-400">${person.burgers.length} hamburguesa(s)</div>
+            </div>
+            <div class="font-orbitron text-sm font-bold text-cosmic-cyan">
+              ${formatMoney(personTotal)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      grandTotalEl.innerText = formatMoney(eventGrandTotal);
+      avgBurgerEl.innerText = formatMoney(totals.burgers > 0 ? (eventGrandTotal / totals.burgers) : 0);
+    }
+
+    function addPerson(name) {
+      const cleanName = name.trim();
+      if (!cleanName) return;
+
+      const newPerson = {
+        id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        name: cleanName,
+        burgers: []
+      };
+
+      // Add 1 default burger automatically for convenience
+      newPerson.burgers.push(createNewBurger('Burgers Clásica'));
+
+      state.people.push(newPerson);
+      state.activeBurgerSelection = { personId: newPerson.id, burgerId: newPerson.burgers[0].id };
+
+      saveState();
+      renderApp();
+      showToast(`¡${cleanName} sumado a la nave!`);
+    }
+
+    function removePerson(personId) {
+      state.people = state.people.filter(p => p.id !== personId);
+      saveState();
+      renderApp();
+      showToast('Comensal eliminado');
+    }
+
+    function createNewBurger(name = 'Smash Burger') {
+      return {
+        id: 'b_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        name: name,
+        patties: 1,
+        cheddar: 1,
+        bacon: 1,
+        muzza: 0,
+        egg: 0,
+        onion: 'smash'
+      };
+    }
+
+    function addBurgerToPerson(personId) {
+      const person = state.people.find(p => p.id === personId);
+      if (!person) return;
+
+      const burger = createNewBurger(`Burger #${person.burgers.length + 1}`);
+      person.burgers.push(burger);
+
+      state.activeBurgerSelection = { personId: person.id, burgerId: burger.id };
+
+      saveState();
+      renderApp();
+      showToast(`Hamburguesa agregada para ${person.name}`);
+    }
+
+    function removeBurger(personId, burgerId) {
+      const person = state.people.find(p => p.id === personId);
+      if (!person) return;
+
+      person.burgers = person.burgers.filter(b => b.id !== burgerId);
+      saveState();
+      renderApp();
+    }
+
+    function updateIngredient(personId, burgerId, key, delta) {
+      const person = state.people.find(p => p.id === personId);
+      if (!person) return;
+      const burger = person.burgers.find(b => b.id === burgerId);
+      if (!burger) return;
+
+      const current = burger[key] || 0;
+      const next = Math.max(0, current + delta);
+      burger[key] = next;
+
+      // Ensure active selection for visualizer
+      state.activeBurgerSelection = { personId, burgerId };
+
+      saveState();
+      renderApp();
+    }
+
+    function updateOnionStyle(personId, burgerId, style) {
+      const person = state.people.find(p => p.id === personId);
+      if (!person) return;
+      const burger = person.burgers.find(b => b.id === burgerId);
+      if (!burger) return;
+
+      burger.onion = style;
+      state.activeBurgerSelection = { personId, burgerId };
+
+      saveState();
+      renderApp();
+    }
+
+    function applyPreset(personId, burgerId, presetKey) {
+      if (!presetKey || !PRESETS[presetKey]) return;
+
+      const person = state.people.find(p => p.id === personId);
+      if (!person) return;
+      const burger = person.burgers.find(b => b.id === burgerId);
+      if (!burger) return;
+
+      const preset = PRESETS[presetKey];
+      burger.patties = preset.patties;
+      burger.cheddar = preset.cheddar;
+      burger.bacon = preset.bacon;
+      burger.muzza = preset.muzza;
+      burger.egg = preset.egg;
+      burger.onion = preset.onion;
+
+      state.activeBurgerSelection = { personId, burgerId };
+
+      saveState();
+      renderApp();
+      showToast(`Preset "${preset.name}" aplicado`);
+    }
+
+    function setActiveVisualizer(personId, burgerId) {
+      state.activeBurgerSelection = { personId, burgerId };
+      renderBurgerVisualizer();
+      renderPeople();
+    }
+
+    function loadDemoData() {
+      state.people = [
+        {
+          id: 'p_demo_1',
+          name: 'Lucas',
+          burgers: [
+            { id: 'b_demo_1', name: 'Doble Bacon', patties: 2, cheddar: 2, bacon: 2, muzza: 0, egg: 0, onion: 'smash' }
+          ]
+        },
+        {
+          id: 'p_demo_2',
+          name: 'Sofi',
+          burgers: [
+            { id: 'b_demo_2', name: 'Smash Clásica', patties: 1, cheddar: 1, bacon: 0, muzza: 0, egg: 0, onion: 'smash' }
+          ]
+        },
+        {
+          id: 'p_demo_3',
+          name: 'Martín',
+          burgers: [
+            { id: 'b_demo_3', name: 'Cosmic Triple', patties: 3, cheddar: 3, bacon: 2, muzza: 0, egg: 1, onion: 'smash' },
+            { id: 'b_demo_4', name: 'Huevo Muzza', patties: 2, cheddar: 0, bacon: 1, muzza: 2, egg: 1, onion: 'chopped' }
+          ]
+        }
+      ];
+
+      state.activeBurgerSelection = { personId: 'p_demo_1', burgerId: 'b_demo_1' };
+      saveState();
+      renderApp();
+      showToast('¡Datos de ejemplo cargados!');
+    }
+
+    function copyWhatsAppSummary() {
+      let totalBurgers = 0;
+      let totalBeefGrams = 0;
+      let totalBuns = 0;
+      let totalCheddar = 0;
+      let totalBacon = 0;
+      let totalMuzza = 0;
+      let totalEggs = 0;
+      let grandTotal = 0;
+
+      let personLines = '';
+
+      state.people.forEach(p => {
+        const pTotal = calculatePersonTotal(p, state.prices);
+        grandTotal += pTotal;
+
+        p.burgers.forEach(b => {
+          totalBurgers += 1;
+          totalBeefGrams += b.patties * 90;
+          totalBuns += 1;
+          totalCheddar += b.cheddar;
+          totalBacon += b.bacon;
+          totalMuzza += b.muzza;
+          totalEggs += b.egg;
+        });
+
+        personLines += `• *${p.name}* (${p.burgers.length} burgers): ${formatMoney(pTotal)}\n`;
+      });
+
+      const text = 
+`🍔 *COSMIC SMASH DINER - VAQUITA* 🚀
+----------------------------------------
+👥 *Comensales:* ${state.people.length} | 🍔 *Total Hamburguesas:* ${totalBurgers}
+💰 *COSTO TOTAL EVENTO:* ${formatMoney(grandTotal)}
+
+🛒 *LISTA COMPRENSIVA DE SUPERMERCADO:*
+• Carne Vacuna (90g c/u): *${(totalBeefGrams / 1000).toFixed(2)} kg* (${totalBeefGrams}g)
+• Panes de Hamburguesa: *${totalBuns} u.*
+• Queso Cheddar: *${totalCheddar} fetas*
+• Panceta / Bacon: *${totalBacon} tiras*
+• Queso Mozzarella: *${totalMuzza} fetas*
+• Huevos: *${totalEggs} u.*
+
+💵 *DESGLOSE DE LA VAQUITA (POR PERSONA):*
+${personLines}
+----------------------------------------
+¡Smasheado y calculado espacialmente! 🌌`;
+
+      // Copy text using fallback text area method
+      const el = document.createElement('textarea');
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      showToast('¡Resumen copiado para WhatsApp!', '💬');
+    }
+
+    function setupPricesModal() {
+      const modal = document.getElementById('prices-modal');
+      const openBtn = document.getElementById('btn-open-prices');
+      const closeBtn = document.getElementById('btn-close-prices');
+      const saveBtn = document.getElementById('btn-save-prices');
+      const resetBtn = document.getElementById('btn-reset-default-prices');
+
+      openBtn.addEventListener('click', () => {
+        document.getElementById('input-currency').value = state.currency;
+        document.getElementById('price-beef-kg').value = state.prices.beefKg;
+        document.getElementById('price-bun').value = state.prices.bun;
+        document.getElementById('price-cheddar').value = state.prices.cheddar;
+        document.getElementById('price-bacon').value = state.prices.bacon;
+        document.getElementById('price-muzza').value = state.prices.muzza;
+        document.getElementById('price-egg').value = state.prices.egg;
+        document.getElementById('price-onion-kg').value = state.prices.onionKg;
+        document.getElementById('price-extras').value = state.prices.extras;
+
+        modal.classList.remove('hidden');
+      });
+
+      closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+      saveBtn.addEventListener('click', () => {
+        state.currency = document.getElementById('input-currency').value;
+        state.prices.beefKg = parseFloat(document.getElementById('price-beef-kg').value) || 0;
+        state.prices.bun = parseFloat(document.getElementById('price-bun').value) || 0;
+        state.prices.cheddar = parseFloat(document.getElementById('price-cheddar').value) || 0;
+        state.prices.bacon = parseFloat(document.getElementById('price-bacon').value) || 0;
+        state.prices.muzza = parseFloat(document.getElementById('price-muzza').value) || 0;
+        state.prices.egg = parseFloat(document.getElementById('price-egg').value) || 0;
+        state.prices.onionKg = parseFloat(document.getElementById('price-onion-kg').value) || 0;
+        state.prices.extras = parseFloat(document.getElementById('price-extras').value) || 0;
+
+        saveState();
+        renderApp();
+        modal.classList.add('hidden');
+        showToast('¡Precios actualizados!', '⚙️');
+      });
+
+      resetBtn.addEventListener('click', () => {
+        state.prices = { ...DEFAULT_PRICES };
+        document.getElementById('price-beef-kg').value = DEFAULT_PRICES.beefKg;
+        document.getElementById('price-bun').value = DEFAULT_PRICES.bun;
+        document.getElementById('price-cheddar').value = DEFAULT_PRICES.cheddar;
+        document.getElementById('price-bacon').value = DEFAULT_PRICES.bacon;
+        document.getElementById('price-muzza').value = DEFAULT_PRICES.muzza;
+        document.getElementById('price-egg').value = DEFAULT_PRICES.egg;
+        document.getElementById('price-onion-kg').value = DEFAULT_PRICES.onionKg;
+        document.getElementById('price-extras').value = DEFAULT_PRICES.extras;
+      });
+    }
+
+    // Helper HTML escaping to prevent XSS
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    window.onload = function() {
+      loadState();
+      setupPricesModal();
+
+      // Form Add Person Listener
+      document.getElementById('form-add-person').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('input-person-name');
+        addPerson(input.value);
+        input.value = '';
+      });
+
+      // Quick Demo Button Listener
+      document.getElementById('btn-quick-demo').addEventListener('click', loadDemoData);
+
+      // Copy WhatsApp Button Listener
+      document.getElementById('btn-copy-whatsapp').addEventListener('click', copyWhatsAppSummary);
+
+      renderApp();
+    };
+  </script>
+</body>
+</html>
